@@ -16,12 +16,13 @@ const LoginPage = () => {
       const response = await axios.post('http://localhost:8080/auth/login', { username, password });
       if (response.status === 200) {
         const userData = {
-            username: response.data.username,
-            _id: response.data.userId,
-            token: response.data.token,
+          username: response.data.username,
+          _id: response.data.userId,
+          token: response.data.token,
         };
+        localStorage.setItem('authToken', response.data.token);
         setUser(userData);
-        navigate('/home'); 
+        navigate('/home');
       }
     } catch (error) {
       console.error('Login failed', error);
