@@ -13,7 +13,6 @@ export const CartProvider = ({ children }) => {
       console.error('User ID is missing');
       return [];
     }
-  
     try {
       const response = await axios.get(`http://localhost:8080/carts/user/${userId}`);
       const cartData = response.data.products || [];
@@ -22,7 +21,6 @@ export const CartProvider = ({ children }) => {
         if (!productId) {
           return { ...item, productDetails: null };
         }
-  
         try {
           const productResponse = await axios.get(`http://localhost:8080/products/${productId}`);
           return { ...item, productDetails: productResponse.data };
@@ -68,15 +66,30 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  const updateQuantity = async (productId, act) => {
+    if(!user._id || !productId) {
+      console.error('User Id or ProductId is missing');
+      return;
+    }
+    try{
+      const response = await axios.put('http://localhost:8080/carts/update-quantity', { userId: user._id, productId, act,});
+      if(response.status === 200){
+        const updatedCart = await fetchCartFromServer(user._id);
+        setCart(updatedCart);
+      }
+    }
+    catch (error){
+      console.error('Error updated Quantity', error.response? error.response.data : error.message);
+    }
+  };
+
   const removeFromCart = async (productId) => {
     if (!user?._id || !productId) {
       console.error('User ID or Product ID is missing');
       return;
     }
-
     try {
       const response = await axios.delete('http://localhost:8080/carts/remove', { data: { userId: user._id, productId } });
-
       if (response.status === 200) {
         const updatedCart = await fetchCartFromServer(user._id);
         setCart(updatedCart);
@@ -87,7 +100,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity }}>
       {children}
     </CartContext.Provider>
   );

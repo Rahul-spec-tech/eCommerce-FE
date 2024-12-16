@@ -6,6 +6,7 @@ import { useCart } from './CartContext';
 
 const HomePage = () => {
   const { user } = useUser();
+  const { cart } = useCart();
   const { addToCart } = useCart();
   const [categories, setCategories] = useState([]);
   const [productsByCategory, setProductsByCategory] = useState({});
@@ -90,10 +91,10 @@ const HomePage = () => {
             </div>
           )}
         </div>
-        <button onClick={() => navigate('/cart')} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Cart</button>
+        <button onClick={() => navigate('/cart')} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Cart ({cart.length})</button>
       </nav>
 
-      <div className="mt-110 pt-72 px-8">
+      <div className="mt-110 pt-72 px-20">
         {categories.length > 0 ? (
           categories.map(category => (
             <div key={category} className="my-10">
